@@ -8,22 +8,22 @@ WORKDIR="/root/.zeroclaw"
 
 mkdir -p "$WORKDIR"
 
-# Run onboarding only once
-if [ ! -f "$WORKDIR/config.toml" ]; then
-  echo "Running Zeroclaw onboarding..."
+echo "Writing full config..."
 
-  zeroclaw onboard \
-    --api-key "$OPENROUTER_API_KEY" \
-    --provider openrouter \
-    --memory sqlite
-fi
+cat <<EOF > "$WORKDIR/config.toml"
+[providers.openrouter]
+api_key = "$OPENROUTER_API_KEY"
+default_temperature = 0.7
 
-# Allow public binding (required for Render)
-if ! grep -q "allow_public_bind" "$WORKDIR/config.toml"; then
-  echo "" >> "$WORKDIR/config.toml"
-  echo "[gateway]" >> "$WORKDIR/config.toml"
-  echo "allow_public_bind = true" >> "$WORKDIR/config.toml"
-fi
+[agent]
+name = "zeroclaw-agent"
+
+[memory]
+backend = "sqlite"
+
+[gateway]
+allow_public_bind = true
+EOF
 
 chmod 600 "$WORKDIR/config.toml" || true
 
