@@ -8,6 +8,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && apt install -y \
     curl \
     ca-certificates \
+    build-essential \
+    pkg-config \
+    libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Zeroclaw (Rust binary)
