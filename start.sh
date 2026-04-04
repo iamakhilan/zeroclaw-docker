@@ -1,20 +1,28 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 echo "Starting Zeroclaw..."
 
-mkdir -p /root/.zeroclaw
+PORT="${PORT:-10000}"
+WORKDIR="/root/.zeroclaw"
 
-cat <<EOF > /root/.zeroclaw/config.toml
-[providers.openrouter]
-api_key = "$OPENROUTER_API_KEY"
-default_temperature = 0.7
+# Create config directory
+mkdir -p "$WORKDIR"
 
-[agent]
-name = "zeroclaw-agent"
+# Run onboarding ONLY if config doesn't exist
+if [ ! -f "$WORKDIR/config.toml" ]; then
+  echo "Running Zeroclaw onboarding..."
 
-[memory]
-enabled = true
-EOF
+  zeroclaw onboard \
+    --api-key "$OPENROUTER_API_KEY" \
+    --provider openrouter \
+    --memory sqlite
+fi
 
-zeroclaw daemon --host 0.0.0.0 --port 10000
+# Fix permissions (optional but removes warning)
+chmod 600 "$WORKDIR/config.toml" || true
+
+echo "Launching Zeroclaw daemon..."
+
+# Start Zeroclaw
+exec zeroclaw daemon --host 0.0.0.0 --port "$PORT"
