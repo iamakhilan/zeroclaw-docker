@@ -8,23 +8,26 @@ WORKDIR="/root/.zeroclaw"
 
 mkdir -p "$WORKDIR"
 
-echo "Writing full config..."
+# Always regenerate config cleanly
+echo "Generating config via onboarding..."
 
-cat <<EOF > "$WORKDIR/config.toml"
-[providers.openrouter]
-api_key = "$OPENROUTER_API_KEY"
-default_temperature = 0.7
+rm -f "$WORKDIR/config.toml"
 
-[agent]
-name = "zeroclaw-agent"
+zeroclaw onboard \
+  --api-key "$OPENROUTER_API_KEY" \
+  --provider openrouter \
+  --memory sqlite
 
-[memory]
-backend = "sqlite"
+# Now safely patch gateway (append only valid section)
+echo "Enabling public gateway..."
+
+cat <<EOF >> "$WORKDIR/config.toml"
 
 [gateway]
 allow_public_bind = true
 EOF
 
+# Fix permissions
 chmod 600 "$WORKDIR/config.toml" || true
 
 echo "Launching Zeroclaw daemon..."
