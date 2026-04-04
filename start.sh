@@ -6,10 +6,9 @@ echo "Starting Zeroclaw..."
 PORT="${PORT:-10000}"
 WORKDIR="/root/.zeroclaw"
 
-# Create config directory
 mkdir -p "$WORKDIR"
 
-# Run onboarding ONLY if config doesn't exist
+# Run onboarding only once
 if [ ! -f "$WORKDIR/config.toml" ]; then
   echo "Running Zeroclaw onboarding..."
 
@@ -19,10 +18,15 @@ if [ ! -f "$WORKDIR/config.toml" ]; then
     --memory sqlite
 fi
 
-# Fix permissions (optional but removes warning)
+# Allow public binding (required for Render)
+if ! grep -q "allow_public_bind" "$WORKDIR/config.toml"; then
+  echo "" >> "$WORKDIR/config.toml"
+  echo "[gateway]" >> "$WORKDIR/config.toml"
+  echo "allow_public_bind = true" >> "$WORKDIR/config.toml"
+fi
+
 chmod 600 "$WORKDIR/config.toml" || true
 
 echo "Launching Zeroclaw daemon..."
 
-# Start Zeroclaw
 exec zeroclaw daemon --host 0.0.0.0 --port "$PORT"
