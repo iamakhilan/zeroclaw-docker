@@ -16,6 +16,8 @@ zeroclaw onboard \
   --provider openrouter \
   --memory sqlite
 
+sed -i 's|default_model = ".*"|default_model = "meta-llama/llama-4-maverick"|' "$WORKDIR/config.toml"
+
 # 🔥 ONLY patch gateway safely
 sed -i '/\[gateway\]/,/^\[/ s/host = "127.0.0.1"/host = "0.0.0.0"/' "$WORKDIR/config.toml"
 sed -i '/\[gateway\]/,/^\[/ s/allow_public_bind = false/allow_public_bind = true/' "$WORKDIR/config.toml"
