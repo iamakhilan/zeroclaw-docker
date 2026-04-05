@@ -20,7 +20,7 @@ zeroclaw onboard \
   --provider openrouter \
   --memory sqlite
 
-# Now safely patch gateway (append only valid section)
+# Now safely patch gateway
 echo "Enabling public gateway..."
 
 cat <<EOF >> "$WORKDIR/config.toml"
@@ -28,9 +28,6 @@ cat <<EOF >> "$WORKDIR/config.toml"
 [gateway]
 allow_public_bind = true
 EOF
-
-# Fix permissions
-chmod 600 "$WORKDIR/config.toml" || true
 
 echo "Launching Zeroclaw daemon..."
 
