@@ -13,7 +13,9 @@ echo "Generating config via onboarding..."
 
 rm -f "$WORKDIR/config.toml"
 
+# Use --once to ensure the command exits
 zeroclaw onboard \
+  --once \
   --api-key "$OPENROUTER_API_KEY" \
   --provider openrouter \
   --memory sqlite

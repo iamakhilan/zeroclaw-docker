@@ -30,3 +30,6 @@ COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
 CMD ["/start.sh"]
+
+# Ensure the working directory has the correct permissions for SQLite
+RUN chown -R root:root /root && chmod -R 755 /root
