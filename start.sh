@@ -16,7 +16,7 @@ zeroclaw onboard \
   --provider openrouter \
   --memory sqlite
 
-sed -i 's|default_model = ".*"|default_model = "qwen/qwen3.6-plus:free"|' "$WORKDIR/config.toml"
+sed -i 's|default_model = ".*"|default_model = "openai/gpt-oss-20b:free"|' "$WORKDIR/config.toml"
 
 # 🔥 ONLY patch gateway safely
 sed -i '/\[gateway\]/,/^\[/ s/host = "127.0.0.1"/host = "0.0.0.0"/' "$WORKDIR/config.toml"
